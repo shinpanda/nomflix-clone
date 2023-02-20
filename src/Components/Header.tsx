@@ -47,6 +47,7 @@ const Circle = styled(motion.span)`
   margin: 0 auto;
   background-color: ${(props) => props.theme.red};
 `;
+
 const Search = styled.form`
   color: white;
   display: flex;
