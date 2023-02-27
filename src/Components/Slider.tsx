@@ -1,14 +1,25 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import { MdArrowLeft, MdArrowRight } from "react-icons/md";
 import { useMatch, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { MoviesResponse } from "../api";
 import { makeImagePath, offset } from "../utils";
 import MovieDetail from "./MovieDetail";
 
-const Slider = styled.div`
+const Container = styled.div`
   margin: 30px 0px;
-  padding: 10px;
+`;
+
+const Slider = styled.div`
+  padding: 15px;
+  display: flex;
+  align-items: center;
+`;
+
+const ArrowButton = styled.button`
+  font-size: 5vw;
+  cursor: pointer;
 `;
 
 const SliderTitle = styled.h3`
@@ -20,10 +31,10 @@ const SliderTitle = styled.h3`
 `;
 
 const Row = styled(motion.div)`
-  display: grid;
+  display: inline-grid;
   gap: 10px;
   grid-template-columns: repeat(6, 1fr);
-  width: 100%;
+  width: 90vw;
 `;
 
 const Box = styled(motion.div)<{ bgPhoto: string }>`
@@ -118,14 +129,19 @@ function MovieSlider({ title, data, key }: sliderParam) {
   };
   const onOverlayClick = () => navigate("/");
 
+  const totalMovies = data ? data.results.length - 1 : 0;
+  const maxIndex = Math.floor(totalMovies / offset) - 1;
+
+  const decreaseIndex = () => {
+    if (leaving) return;
+    toggleLeaving();
+    setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
+  };
+
   const increaseIndex = () => {
-    if (data) {
-      if (leaving) return;
-      toggleLeaving();
-      const totalMovies = data.results.length - 1;
-      const maxIndex = Math.floor(totalMovies / offset) - 1;
-      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
-    }
+    if (leaving) return;
+    toggleLeaving();
+    setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
   };
 
   const clickedMovie =
@@ -135,16 +151,17 @@ function MovieSlider({ title, data, key }: sliderParam) {
     );
 
   return (
-    <>
+    <Container>
+      <SliderTitle>{title}</SliderTitle>
       <Slider>
-        <SliderTitle>{title}</SliderTitle>
         <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+          <ArrowButton as={MdArrowLeft} onClick={decreaseIndex} />
           <Row
             variants={rowVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
-            transition={{ type: "tween", duration: 1 }}
+            transition={{ type: "linear", duration: 0.3 }}
             key={index}
           >
             {data?.results
@@ -167,6 +184,7 @@ function MovieSlider({ title, data, key }: sliderParam) {
                 </Box>
               ))}
           </Row>
+          <ArrowButton as={MdArrowRight} onClick={increaseIndex} />
         </AnimatePresence>
       </Slider>
       <AnimatePresence>
@@ -180,7 +198,7 @@ function MovieSlider({ title, data, key }: sliderParam) {
           </Overlay>
         ) : null}
       </AnimatePresence>
-    </>
+    </Container>
   );
 }
 export default MovieSlider;

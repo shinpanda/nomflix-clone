@@ -1,12 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
-import App from "./App";
-import Home from "./Components/Home";
-import Search from "./Components/Search";
-import Tv from "./Components/Tv";
+import router from "./Router";
 import { theme } from "./theme";
 
 const GlobalStyle = createGlobalStyle`
@@ -75,32 +72,6 @@ a {
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error(`root is not exist`);
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-    children: [
-      {
-        path: "",
-        element: <Home />,
-        children: [
-          {
-            path: "/movies/:movieId",
-          },
-        ],
-      },
-      {
-        path: "tv",
-        element: <Tv />,
-      },
-      {
-        path: "search",
-        element: <Search />,
-      },
-    ],
-  },
-]);
 
 const client = new QueryClient();
 

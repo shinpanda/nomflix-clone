@@ -91,7 +91,6 @@ function Tv() {
       )}
     </Wrapper>
   );
-  return <>Tv</>;
 }
 
 export default Tv;
