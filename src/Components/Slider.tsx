@@ -1,78 +1,21 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import { MdArrowLeft, MdArrowRight } from "react-icons/md";
 import { useMatch, useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import { useRecoilState } from "recoil";
 import { MoviesResponse } from "../api";
-import { makeImagePath, offset } from "../utils";
+import {
+  ArrowButton,
+  Box,
+  Container,
+  Info,
+  Overlay,
+  Row,
+  Slider,
+  SliderTitle,
+} from "../styles/SliderStyles";
+import { makeImagePath, offsetState } from "../utils";
 import MovieDetail from "./MovieDetail";
-
-const Container = styled.div`
-  margin: 30px 0px;
-`;
-
-const Slider = styled.div`
-  padding: 15px;
-  display: flex;
-  align-items: center;
-`;
-
-const ArrowButton = styled.button`
-  font-size: 5vw;
-  cursor: pointer;
-`;
-
-const SliderTitle = styled.h3`
-  font-size: 25px;
-  font-weight: bold;
-  color: white;
-  padding-left: 10px;
-  margin-bottom: 10px;
-`;
-
-const Row = styled(motion.div)`
-  display: inline-grid;
-  gap: 10px;
-  grid-template-columns: repeat(6, 1fr);
-  width: 90vw;
-`;
-
-const Box = styled(motion.div)<{ bgPhoto: string }>`
-  height: 200px;
-  font-size: 66px;
-  background-color: white;
-  background: url(${(props) => props.bgPhoto});
-  background-size: cover;
-  background-position: center center;
-  cursor: pointer;
-  &:first-child {
-    transform-origin: center left;
-  }
-  &:last-child {
-    transform-origin: center right;
-  }
-`;
-const Info = styled(motion.div)`
-  padding: 10px;
-  background-color: ${(props) => props.theme.black.lighter};
-  opacity: 0;
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  h4 {
-    text-align: center;
-    font-size: 18px;
-  }
-`;
-
-const Overlay = styled(motion.div)`
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-`;
 
 const rowVariants = {
   hidden: {
@@ -128,6 +71,7 @@ function MovieSlider({ title, data, key }: sliderParam) {
     navigate(`/movies/${movieId}`);
   };
   const onOverlayClick = () => navigate("/");
+  const [offset, setOffset] = useRecoilState(offsetState);
 
   const totalMovies = data ? data.results.length - 1 : 0;
   const maxIndex = Math.floor(totalMovies / offset) - 1;
@@ -150,6 +94,18 @@ function MovieSlider({ title, data, key }: sliderParam) {
       (movie) => String(movie.id) === bigMovieMatch.params.movieId
     );
 
+  const handleOffset = () => {
+    setOffset(Math.ceil(window.innerWidth / 240));
+  };
+
+  useEffect(() => {
+    handleOffset();
+    window.addEventListener("resize", handleOffset);
+    return () => {
+      window.removeEventListener("resize", handleOffset);
+    };
+  }, []);
+
   return (
     <Container>
       <SliderTitle>{title}</SliderTitle>
@@ -161,8 +117,9 @@ function MovieSlider({ title, data, key }: sliderParam) {
             initial="hidden"
             animate="visible"
             exit="exit"
-            transition={{ type: "linear", duration: 0.3 }}
+            transition={{ type: "linear", duration: 0.1 }}
             key={index}
+            offset={offset}
           >
             {data?.results
               .slice(1)
