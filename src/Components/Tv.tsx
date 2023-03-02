@@ -1,5 +1,3 @@
-import { useScroll } from "framer-motion";
-import { useState } from "react";
 import { useQueries, UseQueryResult } from "react-query";
 import styled from "styled-components";
 import {
@@ -72,9 +70,6 @@ function Tv() {
   const data = responses.map((response) => response.data);
   const isLoading = responses.some((res) => res.isLoading);
 
-  const [index, setIndex] = useState(0);
-  const [leaving, setLeaving] = useState(false);
-  const { scrollY } = useScroll();
   return (
     <Wrapper>
       {isLoading ? (
