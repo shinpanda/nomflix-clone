@@ -9,6 +9,7 @@ export const Slider = styled.div`
   padding: 15px;
   display: flex;
   align-items: center;
+  overflow: hidden;
 `;
 
 export const ArrowButton = styled.button`

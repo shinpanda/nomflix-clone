@@ -1,4 +1,4 @@
-import { Movie } from "../api";
+import { Movie } from "../../api";
 import {
   Cover,
   Detail,
@@ -6,8 +6,8 @@ import {
   DetailTitle,
   MovieContainer,
   Title,
-} from "../styles/DetailStyles";
-import { makeImagePath } from "../utils";
+} from "../../styles/DetailStyles";
+import { makeImagePath } from "../../utils";
 
 interface movieParam {
   clickedMovie: Movie;

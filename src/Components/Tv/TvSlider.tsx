@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { MdArrowLeft, MdArrowRight } from "react-icons/md";
 import { useMatch, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { MoviesResponse } from "../api";
+import { TvShowsReponse } from "../../api";
 import {
   ArrowButton,
   Box,
@@ -13,9 +13,9 @@ import {
   Row,
   Slider,
   SliderTitle,
-} from "../styles/SliderStyles";
-import { makeImagePath, offsetState } from "../utils";
-import MovieDetail from "./MovieDetail";
+} from "../../styles/SliderStyles";
+import { makeImagePath, offsetState } from "../../utils";
+import TvDetail from "./TvDetail";
 
 const rowVariants = {
   hidden: {
@@ -57,24 +57,24 @@ const infoVariants = {
 
 interface sliderParam {
   title: string;
-  data?: MoviesResponse;
+  data?: TvShowsReponse;
   key: string;
 }
 
-function MovieSlider({ title, data, key }: sliderParam) {
+function TvSlider({ title, data, key }: sliderParam) {
   const navigate = useNavigate();
-  const bigMovieMatch = useMatch("/movies/:movieId");
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);
-  const onBoxClicked = (movieId: number) => {
-    navigate(`/movies/${movieId}`);
+  const onBoxClicked = (tvId: number) => {
+    navigate(`/tv/${tvId}`);
   };
-  const onOverlayClick = () => navigate("/");
+  const onOverlayClick = () => navigate("/tv");
   const [offset, setOffset] = useRecoilState(offsetState);
 
-  const totalMovies = data ? data.results.length - 1 : 0;
-  const maxIndex = Math.floor(totalMovies / offset) - 1;
+  const totalTvs = data ? data.results.length - 1 : 0;
+  const maxIndex = Math.floor(totalTvs / offset) - 1;
+  const matchItem = useMatch("/tv/:tvId");
 
   const decreaseIndex = () => {
     if (leaving) return;
@@ -88,11 +88,9 @@ function MovieSlider({ title, data, key }: sliderParam) {
     setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
   };
 
-  const clickedMovie =
-    bigMovieMatch?.params.movieId &&
-    data?.results.find(
-      (movie) => String(movie.id) === bigMovieMatch.params.movieId
-    );
+  const clickedTv =
+    matchItem?.params.tvId &&
+    data?.results.find((tv) => String(tv.id) === matchItem.params.tvId);
 
   const handleOffset = () => {
     setOffset(Math.ceil(window.innerWidth / 240));
@@ -124,19 +122,19 @@ function MovieSlider({ title, data, key }: sliderParam) {
             {data?.results
               .slice(1)
               .slice(offset * index, offset * index + offset)
-              .map((movie) => (
+              .map((tv) => (
                 <Box
-                  layoutId={movie.id + key}
-                  key={movie.id}
+                  layoutId={tv.id + key}
+                  key={tv.id}
                   variants={boxVariants}
                   whileHover="hover"
                   initial="normal"
-                  onClick={() => onBoxClicked(movie.id)}
+                  onClick={() => onBoxClicked(tv.id)}
                   transition={{ type: "tween" }}
-                  bgPhoto={makeImagePath(movie.poster_path, "w500")}
+                  bgPhoto={makeImagePath(tv.poster_path, "w500")}
                 >
                   <Info variants={infoVariants}>
-                    <h4>{movie.title}</h4>
+                    <h4>{tv.name}</h4>
                   </Info>
                 </Box>
               ))}
@@ -145,17 +143,17 @@ function MovieSlider({ title, data, key }: sliderParam) {
         </AnimatePresence>
       </Slider>
       <AnimatePresence>
-        {bigMovieMatch && clickedMovie ? (
+        {matchItem && clickedTv ? (
           <Overlay
             onClick={onOverlayClick}
             exit={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <MovieDetail clickedMovie={clickedMovie} slideId={key} />
+            <TvDetail clickedTv={clickedTv} slideId={key} />
           </Overlay>
         ) : null}
       </AnimatePresence>
     </Container>
   );
 }
-export default MovieSlider;
+export default TvSlider;

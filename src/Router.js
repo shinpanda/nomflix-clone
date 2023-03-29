@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import NotFound from "./Components/Error/NotFound";
-import Home from "./Components/Home";
-import Search from "./Components/Search";
-import Tv from "./Components/Tv";
+import MovieSection from "./Components/Movie/MovieSection";
+import SearchSection from "./Components/Search/SearchSection";
+import TvSection from "./Components/Tv/TvSection";
 
 const router = createBrowserRouter([
   {
@@ -13,7 +13,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Home />,
+        element: <MovieSection />,
         children: [
           {
             path: "/movies/:movieId",
@@ -22,11 +22,16 @@ const router = createBrowserRouter([
       },
       {
         path: "tv",
-        element: <Tv />,
+        element: <TvSection />,
+        children: [
+          {
+            path: "/tv/:tvId",
+          },
+        ],
       },
       {
         path: "search",
-        element: <Search />,
+        element: <SearchSection />,
       },
     ],
   },

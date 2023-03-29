@@ -5,12 +5,18 @@ import {
   getTopRatedMovies,
   getUpcomingMovies,
   MoviesResponse,
-} from "../api";
-import { Banner, Loader, Overview, Title, Wrapper } from "../styles/PageStyles";
-import { makeImagePath } from "../utils";
-import MovieSlider from "./Slider";
+} from "../../api";
+import {
+  Banner,
+  Loader,
+  Overview,
+  Title,
+  Wrapper,
+} from "../../styles/PageStyles";
+import { makeImagePath } from "../../utils";
+import MovieSlider from "./MovieSlider";
 
-function Home() {
+function MovieSection() {
   const responses = useQueries<MoviesResponse[]>([
     {
       queryKey: ["movies", "nowPlaying"],
@@ -73,4 +79,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default MovieSection;

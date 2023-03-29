@@ -34,7 +34,7 @@ export const Title = styled.h3`
 `;
 
 export const Detail = styled.div`
-  padding: 30px;
+  padding: 3vw;
   line-height: 2em;
 `;
 

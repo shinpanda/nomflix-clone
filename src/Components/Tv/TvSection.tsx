@@ -6,8 +6,9 @@ import {
   getPopularTvShows,
   getTopRatedTvShows,
   TvShowsReponse,
-} from "../api";
-import { makeImagePath } from "../utils";
+} from "../../api";
+import { makeImagePath } from "../../utils";
+import TvSlider from "./TvSlider";
 
 const Wrapper = styled.div`
   background: black;
@@ -44,7 +45,7 @@ const Overview = styled.p`
   width: 50%;
 `;
 
-function Tv() {
+function TvSection() {
   const responses = useQueries([
     {
       queryKey: ["tvshows", "OnTheAir"],
@@ -82,10 +83,30 @@ function Tv() {
             <Title>{data[0]?.results[0].name}</Title>
             <Overview>{data[0]?.results[0].overview}</Overview>
           </Banner>
+          <TvSlider
+            title="On The Air"
+            data={responses[0].data}
+            key="OnTheAir"
+          />
+          <TvSlider
+            title="Airing Today"
+            data={responses[1].data}
+            key="airingToday"
+          />
+          <TvSlider
+            title="Popular TvShows"
+            data={responses[2].data}
+            key="popular"
+          />
+          <TvSlider
+            title="Popular TvShows"
+            data={responses[3].data}
+            key="topRated"
+          />
         </>
       )}
     </Wrapper>
   );
 }
 
-export default Tv;
+export default TvSection;
